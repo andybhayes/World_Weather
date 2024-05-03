@@ -16,56 +16,11 @@ all_files = []
 
 files= glob.glob(extract_dir+ "/*.csv")# thius will select all files with extract folder that are csv, removes need for a for loop
 
-"""def extract_csv_files(zip_file_path, extract_dir):    this only extracts csv files
+def extract_csv_files(zip_file_path, extract_dir):
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
         for file_info in zip_ref.infolist():
             if file_info.filename.endswith('.csv'):
-                zip_ref.extract(file_info, extract_dir)"""
-
-#columns to keep
-keep = ["date_time", "longitude", "latitude","observed_variable",
- "observation_value", "value_significance", "primary_station_id", "station_name", "quality_flag"]
-
-
-
-#joins all csv files within folder in one dataframe
-for file in files:
-    file_path=os.path.join(extract_dir,file)
-    all_files.append(pd.read_csv(file_path))
-df=pd.concat(all_files,ignore_index=True)
-print(df.columns)
-
-#keeps only column wihin keep variale
-df_filtered = df.loc[:, keep]
-
-
-
-dff=df_filtered.sort_values("station_name")
-
-
-#changing the long datetime to short date
-dff["date_time"] =pd.to_datetime((dff["date_time"]))
-dff["year_month"]=dff["date_time"].dt.strftime("%Y-%m")
-
-#drops date_time
-dff=dff.drop("date_time",axis=1)
-
-
-#counts of many of each type of record
-value_significance_counts = dff["value_significance"].value_counts()
-print(value_significance_counts)
-
-
-
-# gives onlfirst 7 charchters in "value_significance" column
-dff["value_significance"]=dff["value_significance"].apply(lambda x:x[:7])
-
-
-
-print(dff.tail(10))
-
-
-
+                zip_ref.extract(file_info, extract_dir)
 
 
 
@@ -76,14 +31,7 @@ combined all 12 months into the 1 filtered dataframe then nsave csv in a cpmplet
 each time the program runs it checks last completed year then adds +1 to the year to DL
 RERUN download
 
-
-
-
 need to keep record of which years are downloaded"""
-
-
-
-
 
 
 
