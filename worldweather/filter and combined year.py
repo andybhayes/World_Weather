@@ -8,7 +8,7 @@ pd.set_option("display.max_columns",None)
 
 
 all_files = []
-extract_dir =r"C:\Users\AndrewHayes\OneDrive - Fourteen IP Communications\Desktop\coper\extracted files"
+extract_dir =r""
 files= glob.glob(extract_dir+ "/*.csv")# thius will select all files with extract folder that are csv, removes need for a for loop
 
 
