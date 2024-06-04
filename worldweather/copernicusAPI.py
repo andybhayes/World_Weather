@@ -2,12 +2,9 @@
 #C:\Users\AndrewHayes\OneDrive - Fourteen IP Communications\Desktop\stuff\Lib\site-packages\cdsapi\api.py"
 import os
 print(os.getcwd())
-t= r"C:\Users\AndrewHayes\OneDrive - Fourteen IP Communications\Desktop\coper\filesviaAPI"
 import cdsapi
-UID=299291
-key="f9b44ab5-e10e-4edf-be42-d1ec97fcdae8"
-
-
+UID=[]
+key=[]
 
 year=1763
 
