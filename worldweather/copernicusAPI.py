@@ -1,5 +1,3 @@
-#gmail accountv - https://cds.climate.copernicus.eu/cdsapp#!/dataset/insitu-observations-surface-land?tab=form
-#C:\Users\AndrewHayes\OneDrive - Fourteen IP Communications\Desktop\stuff\Lib\site-packages\cdsapi\api.py"
 import os
 print(os.getcwd())
 import cdsapi
