@@ -1,5 +1,5 @@
-"""precietacxtion starts at 1781"""
-#this data comes from https://www.ecad.eu/
+
+#This data comes from https://www.ecad.eu/
 import zipfile
 import pandas as pd
 import os
@@ -11,7 +11,7 @@ extract_dir =""
 zip_dir =""
 zip_files = []
 all_files=[]
-"""sort by date"""
+
 
 for root, dirs, files in os.walk(zip_dir):
     for file_name in files:
@@ -65,7 +65,10 @@ dff=dff.drop("date_time",axis=1)
 
 # gives onlfirst 7 charchters in "value_significance" column
 dff["value_significance"]=dff["value_significance"].apply(lambda x:x[:7])
+
+#Convert K to degrees C
 dff["observation_value"] = (dff["observation_value"] - 273.15).round(2)
+
 dff=dff.sort_values("year_month", ascending=False)
 dff.to_parquet("weatherparquet")
 #Save the filtered DataFrame to CSV files based on the year_month range
