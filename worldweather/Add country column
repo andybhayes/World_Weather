@@ -1,15 +1,33 @@
-import  reverse_geocoder as rg
-#needs to be completed
+import pandas as pd
+import reverse_geocoder as rg
+import json
 
-# Function to get the country from latitude and longitude
 def get_country(lat, lon):
     coordinates = (lat, lon)
     result = rg.search(coordinates)
     return result[0]['cc']
-# Example usage
 
-if __name__== "__main__":
-    latitude = 51.823
-    longitude = 11.711
-    country_code = get_country(latitude, longitude)
-    print(country_code)
+if __name__ == "__main__":
+    path = r""
+    df = pd.read_parquet(path)
+
+    # Get unique primary station IDs
+    unique_stations = df["primary_station_id"].unique()
+
+    # Initialize dictionary to store station ID and country
+    station_country_dict = {}
+
+    # Iterate over the unique station IDs and get country info
+    for station_id in unique_stations:
+        # Get the first occurrence of the station ID to retrieve lat and lon
+        station_row = df[df["primary_station_id"] == station_id].iloc[0]
+        lat = station_row["latitude"]
+        lon = station_row["longitude"]
+        country = get_country(lat, lon)
+        station_country_dict[station_id] = country
+
+    # Write the dictionary to a text file in JSON format
+    with open("station_country_list.json", "w") as f:
+        json.dump(station_country_dict, f, indent=4)
+
+    print("Dictionary of station IDs and countries has been written to station_country_list.json")
