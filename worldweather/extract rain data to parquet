@@ -44,9 +44,9 @@ def extract(start,end):
         except zipfile.BadZipFile as e:
             print(f"Bad zip file: {zip_file_path}. Error: {e}")
 
-    # Example usage
+   
 
-
+#pick your year range to extract
 extract(1970, 1974)
 
 
@@ -63,7 +63,7 @@ for file in files:
         print(f"Processed: {file}")
     except Exception as e:
         print(f"Failed to process {file}. Error: {e}")
-print(df.dtypes)
+
 # Concatenate all DataFrames into one
 if all_files:
     df = pl.concat(all_files)
