@@ -1,0 +1,90 @@
+
+import zipfile
+import os
+import glob
+import polars as pl
+
+
+
+
+#below is destination for the extracted files
+extract_dir =r""
+
+#This is the source of the zip files tyo be extracted
+zip_dir =r""
+zip_files = []
+all_files=[]
+
+
+
+
+#Extract all zip files and place csvs into folder
+
+def extract(start,end):
+    for root, dirs, files in os.walk(zip_dir):
+        for file_name in files:
+            if file_name.endswith('.zip'):
+                try:
+                    # Attempt to extract the year from the first four characters of the file name
+                    year = int(file_name[:4])
+                    # Check if the year is within the specified range
+                    if start <= year <= end:
+                        zip_files.append(os.path.join(root, file_name))
+                except ValueError:
+                    # If the conversion to int fails, the file name does not start with a valid year
+                    continue
+
+    for zip_file_path in zip_files:
+        try:
+            with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+                zip_ref.extractall(extract_dir)
+                print(f"Extracted: {zip_file_path}")
+        except PermissionError as e:
+            print(f"Permission denied: {zip_file_path}. Error: {e}")
+        except zipfile.BadZipFile as e:
+            print(f"Bad zip file: {zip_file_path}. Error: {e}")
+
+    # Example usage
+
+
+extract(1970, 1974)
+
+
+# this will select all files with extract folder that are csv, removes need for a for loop
+files= glob.glob(extract_dir+ "/*.csv")
+
+
+#Polars to drop columns and extract to parquet
+output_file=""
+for file in files:
+    try:
+        df = pl.read_csv(file)
+        all_files.append(df)
+        print(f"Processed: {file}")
+    except Exception as e:
+        print(f"Failed to process {file}. Error: {e}")
+print(df.dtypes)
+# Concatenate all DataFrames into one
+if all_files:
+    df = pl.concat(all_files)
+
+    # Now perform operations on the concatenated DataFrame
+    df = df.with_columns(
+        pl.col("date_time").str.strptime(pl.Date, "%Y-%m-%d %H:%M:%S", strict=False).alias("date_time")
+    )
+    df = df.with_columns(
+        pl.col("date_time").dt.strftime("%Y-%m").alias("year_month")
+    )
+
+    # Select the required columns
+    keep = ['year_month', 'longitude', 'latitude', 'observation_value', 'primary_station_id', 'station_name',
+            'source_id']
+    df_filtered = df.select(keep)
+    df_filtered = df_filtered.sort(by='year_month', descending=True)
+
+    print(df_filtered.dtypes)
+    df_filtered.write_parquet(output_file)
+
+
+else:
+    print("No file was made.")
