@@ -1,0 +1,15 @@
+import  reverse_geocoder as rg
+#needs to be completed
+
+# Function to get the country from latitude and longitude
+def get_country(lat, lon):
+    coordinates = (lat, lon)
+    result = rg.search(coordinates)
+    return result[0]['cc']
+# Example usage
+
+if __name__== "__main__":
+    latitude = 51.823
+    longitude = 11.711
+    country_code = get_country(latitude, longitude)
+    print(country_code)
