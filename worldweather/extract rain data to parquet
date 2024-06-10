@@ -67,24 +67,30 @@ for file in files:
 # Concatenate all DataFrames into one
 if all_files:
     df = pl.concat(all_files)
-
     # Now perform operations on the concatenated DataFrame
+    df = df.with_columns(
+        pl.col("date_time").str.replace(r"\+00:00", "").alias("date_time")
+    )
+
+    # Step 2: Parse the datetime string to a date
     df = df.with_columns(
         pl.col("date_time").str.strptime(pl.Date, "%Y-%m-%d %H:%M:%S", strict=False).alias("date_time")
     )
+
+    # Step 3: Format the date to only include year, month, and day
     df = df.with_columns(
-        pl.col("date_time").dt.strftime("%Y-%m").alias("year_month")
+        pl.col("date_time").dt.strftime("%Y-%m-%d").alias("year_month")
     )
 
-    # Select the required columns
+    #Select the required columns
     keep = ['year_month', 'longitude', 'latitude', 'observation_value', 'primary_station_id', 'station_name',
             'source_id']
     df_filtered = df.select(keep)
     df_filtered = df_filtered.sort(by='year_month', descending=True)
-
+    print(df_filtered)
     print(df_filtered.dtypes)
     df_filtered.write_parquet(output_file)
 
-
 else:
-    print("No file was made.")
+    print("No parquet files were processed.")
+
