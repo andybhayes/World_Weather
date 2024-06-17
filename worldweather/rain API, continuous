@@ -1,7 +1,7 @@
 import cdsapi
 import os
 import time
-os.chdir("")
+os.chdir(r"")
 
 def retrieve_data(year):
     c = cdsapi.Client()
@@ -46,7 +46,7 @@ def get_last_year():
         with open("last_year_rain.txt", "r") as f:
             last_year = int(f.read())
     except FileNotFoundError:
-        last_year = 1991  # Default starting year
+        last_year = 1802  # Default starting year
     return last_year
 
 
