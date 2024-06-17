@@ -17,9 +17,7 @@ all_files=[]
 
 
 
-
 #Extract all zip files and place csvs into folder
-
 def extract(start,end):
     for root, dirs, files in os.walk(zip_dir):
         for file_name in files:
@@ -44,13 +42,13 @@ def extract(start,end):
         except zipfile.BadZipFile as e:
             print(f"Bad zip file: {zip_file_path}. Error: {e}")
 
-   
-
-#pick your year range to extract
-extract(1970, 1974)
+    # Example usage
 
 
-# this will select all files with extract folder that are csv, removes need for a for loop
+extract(1980, 1984)
+
+
+# # this will select all files with extract folder that are csv, removes need for a for loop
 files= glob.glob(extract_dir+ "/*.csv")
 
 
@@ -60,11 +58,12 @@ for file in files:
     try:
         df = pl.read_csv(file)
         all_files.append(df)
+
         print(f"Processed: {file}")
     except Exception as e:
         print(f"Failed to process {file}. Error: {e}")
 
-# Concatenate all DataFrames into one
+#Concatenate all DataFrames into one
 if all_files:
     df = pl.concat(all_files)
     # Now perform operations on the concatenated DataFrame
@@ -91,6 +90,6 @@ if all_files:
     print(df_filtered.dtypes)
     df_filtered.write_parquet(output_file)
 
+
 else:
     print("No parquet files were processed.")
-
